@@ -17,10 +17,11 @@ RUN python -m venv /py
 #upgrade pip
 RUN /py/bin/pip install --upgrade pip
 
+#install into docker image
 #install PostgreSQL client and build dependencies
-RUN apk add --update --no-cache postgresql-client && \
+RUN apk add --update --no-cache postgresql-client jpeg-dev && \
     apk add --update --no-cache --virtual .tmp-build-deps \
-    build-base postgresql-dev musl-dev
+    build-base postgresql-dev musl-dev zlib zlib-dev 
 
 RUN /py/bin/pip install -r /tmp/requirements.txt && \
     # if [ $DEV = "true" ]; \
@@ -36,7 +37,12 @@ RUN rm -rf /tmp && \
 RUN adduser \
     --disabled-password \
     --no-create-home \
-    django-user
+    django-user && \
+    mkdir -p /vol/web/media && \
+    mkdir -p /vol/web/static && \
+    chown -R django-user:django-user /vol && \
+    chmod -R 755 /vol
+
 
 ENV PATH="/py/bin:$PATH"
 
