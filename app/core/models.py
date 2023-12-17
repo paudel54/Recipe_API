@@ -60,7 +60,7 @@ class Recipe(models.Model):
     link = models.CharField(max_length=255, blank=True)
     # we could have many different receipe that has many tags
     tags = models.ManyToManyField("Tag")
-    Ingredients = models.ManyToManyField("Ingredient")
+    ingredients = models.ManyToManyField("Ingredient")
 
     def __str__(self):
         return self.title
