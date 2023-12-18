@@ -4,6 +4,7 @@ psycopg2>=2.8.6, <2.9
 drf-spectacular>=0.15.1,<0.16
 debugpy==1.8.0
 pillow >= 8.2.0, <8.3.0
+uwsgi>=2.0.19<2.1
 
 #rebuild after adding requirements
 #docker-compose build

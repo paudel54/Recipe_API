@@ -5,6 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+COPY ./scripts /scripts
 COPY ./app /app
 WORKDIR /app
 EXPOSE 8000
@@ -19,9 +20,10 @@ RUN /py/bin/pip install --upgrade pip
 
 #install into docker image
 #install PostgreSQL client and build dependencies
+#linux-headers for uwsgi deploy
 RUN apk add --update --no-cache postgresql-client jpeg-dev && \
     apk add --update --no-cache --virtual .tmp-build-deps \
-    build-base postgresql-dev musl-dev zlib zlib-dev 
+    build-base postgresql-dev musl-dev zlib zlib-dev linux-headers
 
 RUN /py/bin/pip install -r /tmp/requirements.txt && \
     # if [ $DEV = "true" ]; \
@@ -41,10 +43,14 @@ RUN adduser \
     mkdir -p /vol/web/media && \
     mkdir -p /vol/web/static && \
     chown -R django-user:django-user /vol && \
-    chmod -R 755 /vol
+    chmod -R 755 /vol && \
+    chmod -R +x /scripts
 
 
-ENV PATH="/py/bin:$PATH"
+
+ENV PATH="/scripts:/py/bin:$PATH"
 
 USER django-user
+
+CMD ["run.sh"]
 
